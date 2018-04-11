@@ -458,7 +458,7 @@ they are inconvenient to apply, especially when diffing binaries that are from d
 or with destructive semantics e.g., rm of Coreutils.
 
 In recent years, deep learning \cite{lecun2015deep} has been applied to many domains, include binary analysis \cite{shin2015recognizing}, 
-and show stronger results than other approaches.
+and show stronger results than other approaches. 
 Inspired by DiscovRE and Genius, Gemini \cite{xu2017neural} assumes each function can be represented as an ACFG, which is a CFG with attributes 
 attached to each node, and there should exist a function mapping similarities of ACFGs to similarities of corresponding functions; 
 finally, it chooses to use deep learning and represents the function as a deep neural network model which encodes each ACFG into a 
@@ -490,7 +490,7 @@ similarity/distance between elements in the two sets.
 To this end, we make use of 3 features: intra-function feature, inter-function feature and inter-module feature. 
 The first one is identified by deep neural network on the machine code level, and the last two are identified by human because our 
 dataset can’t represent the global features of one function. 
-For intra-function feature, we represent a function as a matrix whose elements are the machine code in bytes and use convolutional 
+For intra-function feature, we represent a function \cite{schroff2015facenet} as a matrix whose elements are the machine code in bytes and use convolutional 
 neural network (CNN) to convert the matrix into an embedding, i.e. a vector. Furtherly, in order to make the embedding have desirable 
 properties and place similar items nearby and dissimilar ones apart from each other, we embed the CNN into a Siamese network, 
 a deep metric learning network that has been used for fine-grained visual similarity recognition
@@ -530,6 +530,19 @@ Subsection text here.
 \subsubsection{Subsubsection Heading Here}
 Subsubsection text here.
 
+\section{Motivation \& Problem Definition}
+
+\section{Approach}
+
+\section{Evaluation}
+
+\section{Discussion}
+
+\section{Related Work}
+
+\subsection{deep learning}
+
+\subsection{binary diffing}
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
