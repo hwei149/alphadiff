@@ -1,3 +1,4 @@
+% Encoding: UTF-8
 @inproceedings{brumley2008automatic,
   title={Automatic patch-based exploit generation is possible: Techniques and implications},
   author={Brumley, David and Poosankam, Pongsin and Song, Dawn and Zheng, Jiang},
@@ -60,14 +61,6 @@
   year={2017},
   organization={ACM}
 }
-
-@misc{bindiff,
-  title={BinDiff},
-  author={zynamics},
-  howpublished={\url{https://www.zynamics.com/bindiff.html}},
-  year={2018},
-  note={Online: accessed 09-April-2018}
-}
 @article{Dullien2005,
 abstract = {A method to construct an optimal isomorphism between the sets of instructions, sets of basic blocks and sets of functions in two differing but similar executables is presented. This isomorphism can be used for porting recovered information between different disassemblies, recover changes made by security updates and detect code theft. The most interesting applications in the realm of security are in malware analysis where the analysis of a family of trojans or viruses can be reduced to analyzing the differences between the variants, and in recovering the details of fixed vulnerabilities when the vendor of the security patch refuses to disclose details. A framework implementing the described methods is presented, along with empirical data about it's performance when analyzing multiple variants of the same malware and recovering vulnerability details from security updates},
 author = {Dullien, Thomas and Rolles, Rolf},
@@ -79,10 +72,6 @@ title = {{Graph-based comparison of executable objects (english version)}},
 url = {http://actes.sstic.org/SSTIC05/Analyse{\_}differentielle{\_}de{\_}binaires/SSTIC05-article-Flake-Graph{\_}based{\_}comparison{\_}of{\_}Executable{\_}Objects.pdf},
 year = {2005}
 }
-BinDiff. https://www.zynamics.com/bindiff.html. Page checked 3/6/2018.
-
-DULLIEN, T., AND ROLLES, R. Graph-based comparison of executable objects. In Actes de la Symposium sur la Sécurité des Technologies de l’Information et des Communications (2005).
-
 @inproceedings{flake2004structural,
   title={Structural comparison of executable objects},
   author={Flake, Halvar},
@@ -139,19 +128,21 @@ DULLIEN, T., AND ROLLES, R. Graph-based comparison of executable objects. In Act
   year={2016},
   organization={ACM}
 }
-@inproceedings{eschweiler2016discovre,
-  title={discovRE: Efficient Cross-Architecture Identification of Bugs in Binary Code.},
-  author={Eschweiler, Sebastian and Yakdan, Khaled and Gerhards-Padilla, Elmar},
-  booktitle={NDSS},
-  year={2016}
+
+@InProceedings{Eschweiler2016,
+  author    = {Eschweiler, Sebastian and Yakdan, Khaled and Gerhards-Padilla, Elmar},
+  title     = {discovRE: Efficient Cross-Architecture Identification of Bugs in Binary Code.},
+  booktitle = {NDSS},
+  year      = {2016},
 }
-@inproceedings{feng2016scalable,
-  title={Scalable graph-based bug search for firmware images},
-  author={Feng, Qian and Zhou, Rundong and Xu, Chengcheng and Cheng, Yao and Testa, Brian and Yin, Heng},
-  booktitle={Proceedings of the 2016 ACM SIGSAC Conference on Computer and Communications Security},
-  pages={480--491},
-  year={2016},
-  organization={ACM}
+
+@InProceedings{Feng2016,
+  author       = {Feng, Qian and Zhou, Rundong and Xu, Chengcheng and Cheng, Yao and Testa, Brian and Yin, Heng},
+  title        = {Scalable graph-based bug search for firmware images},
+  booktitle    = {Proceedings of the 2016 ACM SIGSAC Conference on Computer and Communications Security},
+  year         = {2016},
+  pages        = {480--491},
+  organization = {ACM},
 }
 @article{hoffmann2017between,
   title={Between subgraph isomorphism and maximum common subgraph},
@@ -175,13 +166,14 @@ DULLIEN, T., AND ROLLES, R. Graph-based comparison of executable objects. In Act
   pages={611--626},
   year={2015}
 }
-@inproceedings{xu2017neural,
-  title={Neural Network-based Graph Embedding for Cross-Platform Binary Code Similarity Detection},
-  author={Xu, Xiaojun and Liu, Chang and Feng, Qian and Yin, Heng and Song, Le and Song, Dawn},
-  booktitle={Proceedings of the 2017 ACM SIGSAC Conference on Computer and Communications Security},
-  pages={363--376},
-  year={2017},
-  organization={ACM}
+
+@InProceedings{Xu2017,
+  author       = {Xu, Xiaojun and Liu, Chang and Feng, Qian and Yin, Heng and Song, Le and Song, Dawn},
+  title        = {Neural Network-based Graph Embedding for Cross-Platform Binary Code Similarity Detection},
+  booktitle    = {Proceedings of the 2017 ACM SIGSAC Conference on Computer and Communications Security},
+  year         = {2017},
+  pages        = {363--376},
+  organization = {ACM},
 }
 @article{wang2000bmat,
   title={Bmat-a binary matching tool for stale profile propagation},
@@ -229,3 +221,39 @@ DULLIEN, T., AND ROLLES, R. Graph-based comparison of executable objects. In Act
   year={2016},
   organization={IEEE}
 }
+@misc{bindiff,
+  title={BinDiff},
+  author={zynamics},
+  howpublished={\url{https://www.zynamics.com/bindiff.html}},
+  year={2018},
+  note={Online: accessed 09-April-2018}
+}
+@misc{idapro,
+  title={IDA Pro Disassembler and Debugger},
+  author={Hex-Rays},
+  howpublished={\url{https://www.hex-rays.com/products/ida/index.shtml}},
+  year={2018},
+  note={Online: accessed 10-April-2018}
+}
+@misc{idapython,
+  title={IDAPython project for Hex-Ray's IDA Pro},
+  author={idapython},
+  howpublished={\url{https://github.com/idapython}},
+  year={2018},
+  note={Online: accessed 10-April-2018}
+}
+@inproceedings{abadi2016tensorflow,
+  title={TensorFlow: A System for Large-Scale Machine Learning.},
+  author={Abadi, Mart{\'\i}n and Barham, Paul and Chen, Jianmin and Chen, Zhifeng and Davis, Andy and Dean, Jeffrey and Devin, Matthieu and Ghemawat, Sanjay and Irving, Geoffrey and Isard, Michael and others},
+  booktitle={OSDI},
+  volume={16},
+  pages={265--283},
+  year={2016}
+}
+@misc{chollet2015keras,
+  title={Keras},
+  author={Chollet, Fran{\c{c}}ois and others},
+  howpublished={\url{https://keras.io/}},
+  year={2015}
+}
+@Comment{jabref-meta: databaseType:bibtex;}
