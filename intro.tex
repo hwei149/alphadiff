@@ -1,0 +1,106 @@
+\section{Introduction}
+Finding the difference between two binaries is a key problem in many security analysis settings, 
+such as patch analysis, malware analysis and vulnerability search. 
+For example, in patch analysis, the attacker makes use of a pre-patched binary and a post-patched binary to find the patched 
+vulnerabilities \cite{brumley2008automatic} or unknown vulnerabilities with a similar pattern 
+to the patched \cite{xu2017spain}. 
+In malware analysis, the researchers analyze the similarity between different malware samples to classify 
+them \cite{bayer2009scalable}\cite{hu2009large} or infer lineage relations \cite{jang2013towards}. 
+In vulnerability search, the researchers search for similar functions to a vulnerable one with the goal of find new vulnerabilities
+ \cite{eschweiler2016discovre}\cite{feng2016scalable}\cite{xu2017neural}.
+
+Binary “diffing” is the inherent challenge shared by the above applications. 
+BinDiff \cite{bindiff} is the current state-of-the-art industrial binary diffing tool, whose core approach is based on graph-isomorphism (GI) 
+theory \cite{Dullien2005}\cite{flake2004structural} to find similarities and differences between binaries. 
+Inspired by BinDiff, BinHunt \cite{gao2008binhunt} and iBinHunt \cite{ming2012ibinhunt} furtherly apply symbolic 
+execution and theorem proving to check functional equivalence among basic blocks to find semantic differences between functions. 
+Based on the idea of “Similarity of Composition” instead of control flow graph (CFG) isomorphism, BinGo \cite{chandramohan2016bingo}
+ and Esh \cite{david2016statistical} statistically reason similarity of whole functions using smaller fragments similarities that 
+ are semantically equivalent scores computed by a SMT solver or a program verifier. 
+In contrast to the aforementioned static methods, BLEX \cite{egele2014blanket} and IMF-SIM \cite{wang2017memory} iteratively execute each 
+ function from two input binaries under controlled randomized environment and extract runtime behavior features to furtherly 
+ determine the similarity among them. They mainly focus on binary diffing problem in the cross-compiler and cross-optimization-level setting. 
+
+All known static binary diffing methods work on assembly code level. 
+Some of them such as BinDiff, DiscovRE and Genius are mainly based on CFG graph matching and have some inevitable drawbacks. 
+First, such approaches are built on the assumption that two semantically equivalent functions have similar CFGs, which can be easily invalidated 
+by common change to the compiler’s optimization level or CPU architecture. 
+For example, the accuracy of BinDiff can be reduced to 0.25 when diffing two binaries compiled from the same source code with -O0 and -O3 
+respectively \cite{egele2014blanket}; 
+Second, the graph isomorphism problem has no known polynomial time algorithm, i.e. accurate algorithms are inevitably inefficient and 
+actually the state of the art for the maximum common subgraph problem becomes computationally infeasible at only 35 vertices when 
+working with unlabeled graphs \cite{hoffmann2017between}.
+Although carefully designed heuristic algorithms such as BinDiff’s are usably fast, they are greedy and erroneous matches will 
+propagate through the isomorphism process; 
+third, these approaches ignore the semantics of concrete assembly-level instructions, as a result, they can’t find the differences 
+due to pure dataflow patches, e.g. increasing the related buffer size to patch a buffer overflow vulnerability. 
+Some other approaches such as BinHunt, BinGo and Esh take instructions’ semantics into consideration, however, they rely on SAT/SMT 
+solvers to determine semantic equivalence, which are computationally expensive. 
+For example, Esh needs on average 3 minutes to compare a pair of functions on an 8-core Ubuntu machine \cite{david2016statistical}. 
+Besides, dynamic approaches such as BLEX and Esh rely on architecture-speciﬁc tools to execute or emulate binaries, as a result, 
+they are inconvenient to apply, especially when diffing binaries that are from different CPU architectures, even firmware images, 
+or with destructive semantics e.g., rm of Coreutils.
+
+In recent years, deep learning \cite{lecun2015deep} has been applied to many domains, include binary analysis \cite{shin2015recognizing}, 
+and show stronger results than other approaches. 
+Inspired by DiscovRE and Genius, Gemini \cite{xu2017neural} assumes each function can be represented as an ACFG, which is a CFG with attributes 
+attached to each node, and there should exist a function mapping similarities of ACFGs to similarities of corresponding functions; 
+finally, it chooses to use deep learning and represents the function as a deep neural network model which encodes each ACFG into a 
+measurable embedding and the distances can reflect the similarities of functions.
+However, Gemini still relies on CFG structure and a set of numeric features, both of which are “hand-tuned” features, and probably 
+pose obstacles while bringing benefits at a more abstract level. Besides, it also ignore the semantics of concrete assembly-level instructions.
+
+Inspired by the work of Shin et al. \cite{shin2015recognizing}, we propose a novel deep learning-assisted static approach to extract features for 
+diffing two versions of the same executable (stripped) on the {\textbf{machine code}} level. 
+Machine code of a function contains all information one can fetch from its assembly code, including instructions’ semantics. 
+Although machine code is so unreadable that it’s hard for humans to directly extract features from it for diffing, 
+it is much more readable to deep neural network. 
+Diffing two versions of the same binary is the initial problem to be solved in this research domain \cite{wang2000bmat} and 
+also the main objective of BinDiff; 
+since BinDiff was released, most of researchers think that there is no more need to study it and turn attention to binary 
+diffing in the cross-compiler and cross-architecture settings, however, the average match accuracy of BinDiff is less than {\color{red}XX} 
+on our benchmark consisting of {\color{red}X} pairs of binaries. 
+We aim to reconstruct the solutions of this domain starting from the initial problem.
+
+Extracting diffing features on the machine code level is changeling. 
+Due to the NP-complete nature of the compiler optimization problem \cite{aho2003compilers}, 
+even recompiling the same source code with the same compiler and optimization options can potentially alter the resulting binary, 
+e.g. register re-allocation and instruction/basic block re-ordering that will finally be represented on the machine code. 
+This become more complicated when diffing different versions of the same binaries, and even further in cross-compiler (vendor, version, optimization level) 
+or cross-architecture setting.
+
+The approach takes two stripped binaries as inputs, each of which can be viewed as a set of functions, and outputs the (partial) matching with 
+similarity/distance between elements in the two sets. 
+To this end, we make use of 3 features: intra-function feature, inter-function feature and inter-module feature. 
+The first one is identified by deep neural network on the machine code level, and the last two are identified by human because our 
+dataset can’t represent the global features of one function. 
+For intra-function feature, we represent a function as a matrix whose elements are the machine code in bytes and use convolutional 
+neural network (CNN) to convert the matrix into an embedding, i.e. a vector. Furtherly, in order to make the embedding have desirable 
+properties and place similar items nearby and dissimilar ones apart from each other, we embed the CNN into a Siamese network, 
+a deep metric learning network that has been used for fine-grained visual similarity recognition
+ \cite{bromley1994signature}\cite{bell2015learning}\cite{schroff2015facenet}\cite{song2016deep}.
+For inter-function feature, we encode the in-degree and out-degree of a function in the call graph (CG) generated for the entire binary 
+file into a vector, to describe the function from the view of relationship with the other functions. 
+For inter-module feature, we encode the calls of a function to common imported functions between two binaries into a one-hot vector, 
+to describe the function from the view of relationship with imported functions that are defined in other files. 
+The inter-function feature and inter-module feature can be treated together as a global context feature. 
+{\color{red}Finally, we separately compute a distance for each feature and merge the three distances to measure the similarity of two functions.} 
+
+We have implemented a prototype of our approach, named $\alpha$Diff.
+{\color{red}{In our evaluation on a small benchmark consisting of {\color{yellow}{XX}} pairs of binaries, $\alpha$Diff outperforms BinDiff by {\color{yellow}{XX}} percentage on average. 
+We separately evaluate the intra-function feature on the testset containing 9308 pairs of binaries and 1,408,297 user-defined functions, and accuracy 
+of top-1 is 0.924 on average and accuracy of top-5 is 0.992 on average. 
+Besides, we apply the identified features to diff binaries in cross-compiler (vendor, version, optimization level) and cross-architecture settings 
+and show that $\alpha$Diff outperforms the state-of-the-art static approach by {\color{yellow}{XX}} percentage on average.}}
+
+Overall, our main contributions are as follows:
+\begin{enumerate}
+\item We first propose a deep learning-assisted approach (Intelligence augmentation, IA) to identify diffing features for cross-binary-version on the machine code level, 
+and show that it performs better than the state-of-the-art industrial tool BinDiff in our evaluation.
+
+\item We have built a labelled dataset for deep learning, which contains 66,823 pairs of binaries and more than 2.5 million pairs of functions. 
+Researchers can freely use the dataset to discover better neural network models.
+
+\item We apply the features that are identified for the cross-version setting to diff binaries in the cross-architecture and cross-compiler settings, 
+and shows that alphaDiff performs better than the state-of-the-art static approach specialized in these.
+\end{enumerate}

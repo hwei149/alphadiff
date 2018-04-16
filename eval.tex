@@ -1,0 +1,117 @@
+\section{Evaluation}
+
+\subsection{Implementation and Setup}
+We have implement a prototype of our approach named $\alpha$Diff, consisting of two
+ components: inputs extractor and neural network model. 
+The inputs extractor is a IDAPython \cite{idapython} plug-in to the disassembly tool
+ IDA Pro \cite{idapro} and is used to extract the machine code, in/out-degree in call
+  graph and calls to imported functions of a function. 
+We implement the neural network model with TensorFlow-1.3 \cite{abadi2016tensorflow}
+ and Keras-2.0 \cite{chollet2015keras}. 
+Our experiments are conducted on a server equipped with two Intel Xeon E5-2650v4
+ CPUs (24 cores in total) running at 2.20 GHz, 128 GB memory, 12TB hard drives,
+  and 4 NVIDIA Tesla P100 PCIE-16G GPU cards. 
+During both training and evaluation, only 1 GPU card was used.
+
+\textbf{Datasets.} In our evaluation, we collect four datasets: 
+(1) Dataset \uppercase\expandafter{\romannumeral1} for training the neural network, evaluating the accuracy of the pre-trained model
+ and evaluating the effectiveness of hyperparameters in our model; 
+(2) Dataset \uppercase\expandafter{\romannumeral2} for evaluating the performance of the model in real-world cross-version settings; 
+(3) Dataset \uppercase\expandafter{\romannumeral3} for evaluating the performance in cross-compiler settings; 
+(4) Dataset \uppercase\expandafter{\romannumeral4} for evaluating the performance in cross-architecture settings.
+\begin{enumerate}
+\item \textbf{Dataset \uppercase\expandafter{\romannumeral1}.} 
+  The dataset is used to train neural network model and evaluate the accuracy of the pre-trained model. 
+  The dataset is consisted of 66,823 pairs of binaries and each of them are two versions of the same
+   executable. 
+  These binaries comes from two sources:
+   (1) GitHub, we collect the releases of some open source projects on GitHub, such as Vim and Git;
+    then, we compile them into executables and group two binaries with adjacent version numbers into a pair;
+     finally, we obtain 23,524 pairs of binaries; 
+  (2) Ubuntu repositories, we collect binaries and their corresponding debug symbol files that coexist on
+   Ubuntu 12.04, 14.04 and 16.04; then, we group them into pairs in the similar way. 
+   All of these binaries have debug symbols, so that they can provide the ground truth for us. 
+   Besides, they are all in x86. We extract samples from the binaries with Inputs Extractor and each sample 
+   contains a function’s machine code, in/out-degree in CG and calls to imported functions. 
+   For each pair of binaries, we extract machine code samples corresponding to all of changed functions and a small part
+    of unchanged ones between two versions. In total, we obtain 2,489,793 samples (pairs of functions) and
+     70.6\% of them are function pairs with source code differences. 
+     We split Dataset \uppercase\expandafter{\romannumeral1} into three disjoint sets of binary pairs for training (44,526 pairs of binaries, 1,665,025 pairs of functions),
+      validation (11,150 pairs of binaries, 417,158 pairs of functions) and testing (11,147 pairs of binaries, 407,610 pairs of functions)
+       respectively. During the split, 
+    we guarantee that no two binaries from the same project are separated into two different sets among
+     training, validation and testing. 
+    By doing so, we can examine whether the pre-trained model can generalize to unseen binary files.  
+\item \textbf{Dataset \uppercase\expandafter{\romannumeral2}.}
+In order to evaluate the performance of $\alpha$Diff in real-world cross-version settings, we construct two sub-datasets:
+ (1) We re-extract all function samples including machine code, in/out-degree in CG and calls to imported functions for each binary pair in the testing set of Dataset \uppercase\expandafter{\romannumeral1},
+ because we oly extract a portion of functions when constructing Dataset \uppercase\expandafter{\romannumeral1} which is different from the real-world scenarios. 
+ In total, the sub-dataset contains 9308 pairs of binaries and more than 1.4 Million user-defined functions.
+ (2) In order to compare with BinDiff in classic cross-version setting, we tried to search for standard benchmarks used by other researchers, however,
+  we didn't find anyone. So we build a open benchmark which consists of binaries hard to diff and none of the binaries exists in Dataset \uppercase\expandafter{\romannumeral1}.
+  Finally, the sub-dataset contains 400 pairs of binaries and 365,374 functions including 176,524 user-defined functions.
+
+\item \textbf{Dataset \uppercase\expandafter{\romannumeral3}.}
+
+\item \textbf{Dataset \uppercase\expandafter{\romannumeral4}.}
+
+\end{enumerate}
+
+\textbf{Training details.} The neural network model is trained using Dataset \uppercase\expandafter{\romannumeral1} as follow. 
+We use RMSProp optimizer ...
+
+\subsection{Accuracy}
+In this section, we evaluate the accuracy of the pre-trained neural network model (Siamese network embedded with CNN) and $\alpha$Diff in Dataset \uppercase\expandafter{\romannumeral2}.
+Before evaluating, we briefly introduce our evaluation metric used in the experiments. 
+For two given binaires $BIN_{pre}$ and $BIN_{post}$, not every function in $BIN_{pre}$ has a match in $BIN_{post}$; 
+so we use the \textbf{Recall@K} metric \cite{jegou2011product}\cite{song2016deep}. 
+Each function (query) in $BIN_{pre}$ first retrieves K nearest neighbors in $BIN_{post}$ and receives 1 if the matched function (with the same function name) is retrieved among the K nearest
+ neighbors and 0 otherwise. 
+Slightly different to \cite{jegou2011product}\cite{song2016deep}, we furtherly divide the Recall@K number by the total number of matches with same function name between $BIN_{pre}$ and $BIN_{post}$
+ and use the result as \textbf{Recall@K} metric.
+We evaluate the accuracy of pre-train neural network model (only intra-function feature) and $\alpha$Diff (all three features) respectively in Dataset \uppercase\expandafter{\romannumeral2}-1.
+ For each binary pair, we compute Recall@1 and Recall@5 respectively. Table \uppercase\expandafter{\romannumeral1} shows the final statistics result.
+
+  \begin{table}[!t]
+  \caption{改变表格任一列宽}
+  \begin{tabular}{p{2cm}|p{3cm}|p{3cm}}  
+  \hline  
+  \hline  
+   & Siamese network \textbf{(intra-function feature)} & $\alpha$Diff \textbf{(all three features)} \\  
+  \hline
+  Recall@1 mean & 0.926 & 0.929 \\  
+  \hline  
+  Recall@5 mean & 0.993 & 0.994 \\   
+  \hline  
+  \hline  
+  \end{tabular}  
+  \end{table} 
+
+   
+
+top-1 accuracy in testing set and the selected smaller benchmark VS BinDiff
+
+\subsection{Hyperparameters}
+\subsubsection{the number of negative samples corresponding to a positive sample}
+
+1:1 vs 1:3 vs 1:7 vs 1:15
+
+\subsubsection{embedding size}
+
+64 vs 128 vs 256 vs 512 vs 1024
+
+\subsubsection{distance metric}
+
+euclidean distance vs cosine distance
+
+\subsubsection{pooling algorithm}
+max pooling vs average pooling
+
+\subsection{Compare to other works}
+
+\par To Esh \& BinDiff in cross-compiler
+
+\par To BinGo in cross-compiler \& cross-architecture
+
+\par To Genius \& Gemini in cross-architecture vulnerability search
+
