@@ -5,9 +5,28 @@
 \usepackage{color}
 \hyphenation{op-tical net-works semi-conduc-tor}
 
+\usepackage{xspace}
+%% Uncomment the following two lines to remove author notes from the paper for submission
+%\newcommand{\authnote}[2]{}
+%\newcommand{\revised}[1]{{#1}}
+\newcommand{\authnote}[2]{{\bf \textcolor{blue}{#1}: \em \textcolor{red}{#2}}}
+\newcommand{\revised}[1]{{\bf \textcolor{orange}{#1}}}
+%\newcommand{\rev}[1]{{\bf \textcolor{purple}{#1}}}
+\newcommand{\todo}[1]{\authnote{todo}{#1}}
+%\newcommand{\comment}[1]{}
+\newcommand{\refnote}[2]{{\small \textcolor{blue}{#1}: \em #2}}
+\newcommand{\note}[1]{\refnote{note}{#1}}
+
+\newcommand{\chao}[1]{\authnote{chao}{#1}} % comments by chao
+\newcommand{\lbc}[1]{\authnote{lbc}{#1}} % comments by bingchang
+
+
+\newcommand{\sysname}{AlphaDiff\xspace}
+
 
 \begin{document}
-\title{AlphaDiff}
+
+\title{\sysname}
 
 \maketitle
 
