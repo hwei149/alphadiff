@@ -6,6 +6,31 @@
 \hyphenation{op-tical net-works semi-conduc-tor}
 
 \usepackage{xspace}
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+   \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+   \graphicspath{{./pdf/}{./jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+   \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+   \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+   \graphicspath{{./eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+   \DeclareGraphicsExtensions{.eps}
+\fi
+
+% table package
+\usepackage{multirow}
+
 %% Uncomment the following two lines to remove author notes from the paper for submission
 %\newcommand{\authnote}[2]{}
 %\newcommand{\revised}[1]{{#1}}
